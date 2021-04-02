@@ -12,8 +12,12 @@
 <script>
 import { ref } from 'vue'
 import { useStore } from 'vuex'
+import CommonOptions from 'common/Options'
 export default {
   name: 'Login',
+  components: {
+    CommonOptions
+  },
   setup() {
     let user = ref('admin')
     let pwd = ref('123')
