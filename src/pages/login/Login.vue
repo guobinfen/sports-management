@@ -1,17 +1,18 @@
 <template>
   <div>
-    <form action="" class="login">
+    <div class="login">
       <div class="title">登录</div>
-      <input type="text" id="user" name="user" v-model="user" />
-      <input type="password" id="pwd" name="user" v-model="pwd" />
+      <input type="text" v-model="user" />
+      <input type="password" v-model="pwd" />
       <button @click.prevent="checkLogin">登录</button>
-    </form>
+    </div>
   </div>
 </template>
 
 <script>
 import { ref } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 import CommonOptions from 'common/Options'
 export default {
   name: 'Login',
@@ -22,11 +23,11 @@ export default {
     let user = ref('admin')
     let pwd = ref('123')
     const store = useStore()
+    const router = useRouter()
     function checkLogin() {
       if (user.value == store.state.p1.user
         && pwd.value == store.state.p1.pwd) {
-        console.log(true)
-        console.log(pwd.value)
+        router.push('/type')
       }
     }
     return { user, pwd, checkLogin }
@@ -73,6 +74,7 @@ export default {
     text-align: center;
     line-height: 20px;
     border-radius: 2px;
+    cursor: pointer;
   }
 }
 </style>
