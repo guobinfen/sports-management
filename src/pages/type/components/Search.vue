@@ -33,9 +33,7 @@ export default {
 
   input {
     margin-left: 8px;
-    padding-left: 8px;
-    border: 1px solid #c0c4cc;
-    border-radius: 4px;
+    input();
   }
 
   input:focus {

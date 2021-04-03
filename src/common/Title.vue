@@ -21,6 +21,8 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+@import '~styles/mixins.styl';
+
 .title {
   height: 40px;
   line-height: 40px;
@@ -45,12 +47,10 @@ export default {
     margin-right: 60px;
     color: #2c3e50;
     font-size: 14px;
-    cursor: pointer;
   }
 
   .exit:hover {
-    color: #409eff;
-    cursor: pointer;
+    fontHover();
   }
 }
 </style>

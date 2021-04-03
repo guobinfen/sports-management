@@ -6,6 +6,7 @@
       <div class="content">
         <type-search></type-search>
         <type-table></type-table>
+        <type-pop></type-pop>
       </div>
     </div>
   </div>
@@ -16,13 +17,15 @@ import CommonTitle from 'common/Title'
 import CommonOptions from 'common/Options'
 import TypeSearch from './components/Search'
 import TypeTable from './components/Table'
+import TypePop from './components/Pop'
 export default {
   name: 'Type',
   components: {
     CommonTitle,
     CommonOptions,
     TypeSearch,
-    TypeTable
+    TypeTable,
+    TypePop
   }
 }
 </script>
