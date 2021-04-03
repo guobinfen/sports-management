@@ -5,6 +5,7 @@
       <common-options></common-options>
       <div class="content">
         <type-search></type-search>
+        <type-table></type-table>
       </div>
     </div>
   </div>
@@ -14,12 +15,14 @@
 import CommonTitle from 'common/Title'
 import CommonOptions from 'common/Options'
 import TypeSearch from './components/Search'
+import TypeTable from './components/Table'
 export default {
   name: 'Type',
   components: {
     CommonTitle,
     CommonOptions,
-    TypeSearch
+    TypeSearch,
+    TypeTable
   }
 }
 </script>
