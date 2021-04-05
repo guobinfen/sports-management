@@ -1,32 +1,66 @@
 <template>
   <div class="box">
     <div class="title">
-      新增项目类型
-      <span class="exit iconfont">&#xe7a0;</span>
+      {{ data.title }}
+      <span class="exit iconfont" @click="close">&#xe7a0;</span>
     </div>
     <div class="name">
       <div class="wrapper">
         <span class="icon">*</span>
-        name:
+        名称:
       </div>
-      <input type="text" placeholder="田赛" />
+      <input type="text" :placeholder="data.name" v-model="ctx.name" />
     </div>
     <div class="des">
       <div class="wrapper">
         <span class="icon">*</span>
-        des:
+        项目介绍:
       </div>
-      <textarea placeholder="田赛" />
+      <textarea :placeholder="data.des" v-model="ctx.des" />
     </div>
-    <button>确认</button>
+    <button @click.prevent="submit">确认</button>
   </div>
 </template>
 
 <script>
+import { reactive, computed } from 'vue'
+import { useStore } from 'vuex'
 export default {
   name: 'TypePop',
-  setup() {
-
+  props: {
+    handlePop: Number
+  },
+  setup(props, context) {
+    const store = useStore()
+    const data = reactive({
+      title: computed(() => store.state.typePop.title),
+      name: computed(() => store.state.typePop.name),
+      des: computed(() => store.state.typePop.des)
+    })
+    const ctx = reactive({
+      name: '',
+      des: ''
+    })
+    function close() {
+      context.emit('closePop')
+      ctx.name = ''
+      ctx.des = ''
+    }
+    function submit() {
+      let newData
+      if (ctx.name && ctx.des) {
+        newData = {
+          id: '000',
+          name: ctx.name,
+          des: ctx.des
+        }
+        context.emit('changeData', newData, props.handlePop)
+      }
+      ctx.name = ''
+      ctx.des = ''
+      close()
+    }
+    return { data, ctx, close, submit }
   },
 }
 </script>
@@ -35,11 +69,16 @@ export default {
 @import '~styles/mixins.styl';
 
 .box {
+  position: fixed;
+  z-index: 2;
+  top: 15%;
+  left: 50%;
   width: 350px;
   height: 220px;
   padding-top: 16px;
   padding-left: 15px;
-  background-color: pink;
+  background-color: #fff;
+  transform: translateX(-50%);
 
   .title {
     font-weight: 700;
@@ -49,6 +88,7 @@ export default {
       margin-right: 20px;
       color: #979aa0;
       font-size: 12px;
+      cursor: pointer;
     }
   }
 

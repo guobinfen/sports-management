@@ -5,6 +5,11 @@ export default createStore({
     p1: {
       user: 'admin',
       pwd: '123'
+    },
+    typePop: {
+      title: '',
+      name: '',
+      des: ''
     }
   },
   mutations: {

@@ -3,17 +3,25 @@
     <span>快速查询:</span>
     <input type="text" :placeholder="value" />
     <button>查询</button>
-    <button class="add">新增项目类型</button>
+    <button class="add" @click="add">新增项目类型</button>
   </div>
 </template>
 
 <script>
 import { ref } from 'vue'
+import { useStore } from 'vuex'
 export default {
   name: 'TypeSearch',
-  setup() {
+  setup(props, context) {
+    const store = useStore()
     const value = ref('请输入项目名称')
-    return { value }
+    function add() {
+      context.emit('pop', -1)
+      store.state.typePop.title = '新增项目类型'
+      store.state.typePop.name = '请输入项目名称'
+      store.state.typePop.des = '请输入项目介绍'
+    }
+    return { value, add }
   }
 }
 </script>

@@ -13,7 +13,9 @@
           <td class="name">{{ item.name }}</td>
           <td class="des">{{ item.des }}</td>
           <td class="operate">
-            <span class="modify">修改</span>
+            <span class="modify" @click="mod(index, item.name, item.des)"
+              >修改</span
+            >
             <span class="del" @click="del(index)">删除</span>
           </td>
         </tr>
@@ -23,33 +25,25 @@
 </template>
 
 <script>
-import { reactive } from 'vue'
+import { useStore } from 'vuex'
 export default {
   name: "TypeTable",
-  setup() {
-    const data = reactive([{
-      id: '1',
-      name: '田赛',
-      des: '田赛说明'
-    }, {
-      id: '2',
-      name: '径赛',
-      des: '径赛说明'
-    }, {
-      id: '3',
-      name: '团体赛',
-      des: '团体说明'
-    }, {
-      id: '4',
-      name: '表演赛',
-      des: '表演赛说明'
-    }
-    ])
+  props: {
+    data: Array
+  },
+  setup(props, context) {
+    const store = useStore()
     function del(index) {
-      data.splice(index, 1)
+      context.emit('del', index)
+    }
+    function mod(index, name, des) {
+      context.emit('pop', index)
+      store.state.typePop.title = '修改项目类型'
+      store.state.typePop.name = name
+      store.state.typePop.des = des
     }
     return {
-      data, del
+      del, mod
     }
   }
 }
