@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import CommonTitle from 'common/Title'
 import CommonOptions from 'common/Options'
 import CommonMask from 'common/Mask'
@@ -34,6 +34,7 @@ import TypeSearch from './components/Search'
 import TypeTable from './components/Table'
 import TypePop from './components/Pop'
 import { useStore } from 'vuex'
+import axios from 'axios'
 export default {
   name: 'Type',
   components: {
@@ -47,23 +48,7 @@ export default {
   },
   setup() {
     const store = useStore()
-    const data = reactive([{
-      id: '1',
-      name: '田赛',
-      des: '田赛说明'
-    }, {
-      id: '2',
-      name: '径赛',
-      des: '径赛说明'
-    }, {
-      id: '3',
-      name: '团体赛',
-      des: '团体说明'
-    }, {
-      id: '4',
-      name: '表演赛',
-      des: '表演赛说明'
-    }])
+    const data = reactive([])
     let isPop = ref(false)
     let isDel = ref(false)
     // 提示pop进行修改还是新增，负数表示新增，非负表示修改的索引号
@@ -96,6 +81,18 @@ export default {
         data[handle] = newData
       }
     }
+    function getTypeInfo() {
+      axios.get('/api/type.json').then(getTypeInfoSucc)
+    }
+    function getTypeInfoSucc(res) {
+      res = res.data
+      if (res.ret && res.data) {
+        data.push(...res.data.data)
+      }
+    }
+    onMounted(() => {
+      getTypeInfo()
+    })
     return { data, isPop, isDel, handlePop, pop, showDel, del, closePop, closeDel, cancelDel, change }
   }
 }
