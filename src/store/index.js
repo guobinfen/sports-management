@@ -11,8 +11,6 @@ export default createStore({
       name: '',
       des: ''
     },
-    typeKey: '',
-    searchStart: false,
     del: {
       confirm: false,
       index: -1
