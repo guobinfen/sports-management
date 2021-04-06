@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <div class="title">
-      {{ data.title }}
+      {{ holder.title }}
       <span class="exit iconfont" @click="close">&#xe7a0;</span>
     </div>
     <div class="name">
@@ -9,21 +9,34 @@
         <span class="icon">*</span>
         名称:
       </div>
-      <input type="text" :placeholder="data.name" v-model="ctx.name" />
+      <input
+        type="text"
+        :placeholder="holder.name"
+        :class="{ warnHint: hint.name }"
+        v-model="ctx.name"
+        @blur="nameBlur"
+      />
     </div>
+    <span class="hint" v-show="hint.name">输入名称不得为空</span>
     <div class="des">
       <div class="wrapper">
         <span class="icon">*</span>
         项目介绍:
       </div>
-      <textarea :placeholder="data.des" v-model="ctx.des" />
+      <textarea
+        :placeholder="holder.des"
+        :class="{ warnHint: hint.des }"
+        v-model="ctx.des"
+        @blur="desBlur"
+      />
     </div>
+    <span class="hint" v-show="hint.des">项目介绍不得为空</span>
     <button @click.prevent="submit">确认</button>
   </div>
 </template>
 
 <script>
-import { reactive, computed } from 'vue'
+import { reactive, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 export default {
   name: 'TypePop',
@@ -32,7 +45,7 @@ export default {
   },
   setup(props, context) {
     const store = useStore()
-    const data = reactive({
+    const holder = reactive({
       title: computed(() => store.state.typePop.title),
       name: computed(() => store.state.typePop.name),
       des: computed(() => store.state.typePop.des)
@@ -41,6 +54,10 @@ export default {
       name: '',
       des: ''
     })
+    const hint = reactive({
+      name: false,
+      des: false
+    })
     function close() {
       context.emit('closePop')
       ctx.name = ''
@@ -48,6 +65,8 @@ export default {
     }
     function submit() {
       let newData
+      nameBlur()
+      desBlur()
       if (ctx.name && ctx.des) {
         newData = {
           id: '000',
@@ -55,12 +74,30 @@ export default {
           des: ctx.des
         }
         context.emit('changeData', newData, props.handlePop)
+        close()
+        ctx.name = ''
+        ctx.des = ''
       }
-      ctx.name = ''
-      ctx.des = ''
-      close()
     }
-    return { data, ctx, close, submit }
+    function nameBlur() {
+      if (!ctx.name) {
+        hint.name = true
+      } else {
+        hint.name = false
+      }
+    }
+    function desBlur() {
+      if (!ctx.des) {
+        hint.des = true
+      } else {
+        hint.des = false
+      }
+    }
+    onMounted(() => {
+      hint.name = false
+      hint.des = false
+    })
+    return { holder, ctx, close, submit, nameBlur, hint, desBlur, onMounted }
   },
 }
 </script>
@@ -74,9 +111,9 @@ export default {
   top: 15%;
   left: 50%;
   width: 350px;
-  height: 220px;
   padding-top: 16px;
   padding-left: 15px;
+  padding-bottom: 16px;
   background-color: #fff;
   transform: translateX(-50%);
 
@@ -90,10 +127,15 @@ export default {
       font-size: 12px;
       cursor: pointer;
     }
+
+    .exit:hover {
+      color: #51a7ff;
+    }
   }
 
   .name, .des {
     width: 340px;
+    margin-top: 10px;
     line-height: 24px;
     zoom: 1;
 
@@ -114,6 +156,10 @@ export default {
       input();
     }
 
+    input:focus {
+      border-color: #409eff;
+    }
+
     input::-webkit-input-placeholder {
       color: #c4c4cc;
     }
@@ -128,10 +174,16 @@ export default {
       margin-left: 4px;
       input();
     }
+
+    .warnHint {
+      border-color: #f56c6c !important;
+    }
   }
 
-  .name, .des {
-    margin-top: 12px;
+  .hint {
+    margin-left: 90px;
+    font-size: 12px;
+    color: #f56c6c;
   }
 
   .icon {
@@ -139,8 +191,9 @@ export default {
   }
 
   button {
+    display: block;
     button();
-    margin-top: 18px;
+    margin-top: 12px;
     margin-left: 82px;
   }
 

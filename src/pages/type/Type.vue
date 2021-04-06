@@ -7,7 +7,7 @@
         <type-search @pop="pop"></type-search>
         <type-table :data="data" @showDel="showDel" @pop="pop"></type-table>
         <type-pop
-          v-show="isPop"
+          v-if="isPop"
           @closePop="closePop"
           @changeData="change"
           :handlePop="handlePop"

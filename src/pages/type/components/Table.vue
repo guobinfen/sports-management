@@ -31,6 +31,7 @@
 <script>
 import { onMounted, reactive, watch } from 'vue'
 import { useStore } from 'vuex'
+import bus from '@/bus/bus'
 export default {
   name: "TypeTable",
   props: {
@@ -50,15 +51,15 @@ export default {
       store.state.typePop.name = name
       store.state.typePop.des = des
     }
-    watch(() => store.state.typeKey, () => {
-      searchResult.splice(0)
-      getData.forEach(val => {
-        if (val.name.indexOf(store.state.typeKey) > -1) {
-          let arr = val
-          searchResult.push(arr)
-        }
-      })
-    })
+    // watch(() => store.state.typeKey, () => {
+    //   searchResult.splice(0)
+    //   getData.forEach(val => {
+    //     if (val.name.indexOf(store.state.typeKey) > -1) {
+    //       let arr = val
+    //       searchResult.push(arr)
+    //     }
+    //   })
+    // })
     watch(props.data, () => {
       getData = props.data
       searchResult.splice(0)
@@ -67,7 +68,16 @@ export default {
     onMounted(
       () => {
         searchResult.splice(0, 0, ...props.data)
-      }
+      },
+      bus.on('search', (key) => {
+        searchResult.splice(0)
+        getData.forEach(val => {
+          if (val.name.indexOf(key) > -1) {
+            let arr = val
+            searchResult.push(arr)
+          }
+        })
+      })
     )
     return {
       del, mod, searchResult

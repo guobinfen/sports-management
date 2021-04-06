@@ -10,6 +10,7 @@
 <script>
 import { ref } from 'vue'
 import { useStore } from 'vuex'
+import bus from '@/bus/bus'
 export default {
   name: 'TypeSearch',
   setup(props, context) {
@@ -23,7 +24,7 @@ export default {
       store.state.typePop.des = '请输入项目介绍'
     }
     function searchKey() {
-      store.state.typeKey = key
+      bus.emit('search', key.value)
     }
     return { value, key, add, searchKey }
   }
