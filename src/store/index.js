@@ -10,7 +10,8 @@ export default createStore({
       title: '',
       name: '',
       des: ''
-    }
+    },
+    typeKey: ''
   },
   mutations: {
   },

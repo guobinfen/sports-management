@@ -9,7 +9,11 @@
         </tr>
       </thead>
       <tbody>
-        <tr class="rowBody" v-for="(item, index) of data" :key="item.id">
+        <tr
+          class="rowBody"
+          v-for="(item, index) of searchResult"
+          :key="item.id"
+        >
           <td class="name">{{ item.name }}</td>
           <td class="des">{{ item.des }}</td>
           <td class="operate">
@@ -25,6 +29,7 @@
 </template>
 
 <script>
+import { onMounted, reactive, watch } from 'vue'
 import { useStore } from 'vuex'
 export default {
   name: "TypeTable",
@@ -33,6 +38,8 @@ export default {
   },
   setup(props, context) {
     const store = useStore()
+    let getData = props.data
+    const searchResult = reactive([])
     function del(index) {
       context.emit('del', index)
     }
@@ -42,8 +49,27 @@ export default {
       store.state.typePop.name = name
       store.state.typePop.des = des
     }
+    watch(() => store.state.typeKey, () => {
+      searchResult.splice(0)
+      getData.forEach(val => {
+        if (val.name.indexOf(store.state.typeKey) > -1) {
+          let arr = val
+          searchResult.push(arr)
+        }
+      })
+    })
+    watch(props.data, () => {
+      getData = props.data
+      searchResult.splice(0)
+      searchResult.splice(0, 0, ...props.data)
+    })
+    onMounted(
+      () => {
+        searchResult.splice(0, 0, ...props.data)
+      }
+    )
     return {
-      del, mod
+      del, mod, searchResult
     }
   }
 }

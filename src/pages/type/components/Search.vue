@@ -1,8 +1,8 @@
 <template>
   <div class="search">
     <span>快速查询:</span>
-    <input type="text" :placeholder="value" />
-    <button>查询</button>
+    <input type="text" :placeholder="value" v-model.lazy="key" />
+    <button @click="searchKey">查询</button>
     <button class="add" @click="add">新增项目类型</button>
   </div>
 </template>
@@ -15,13 +15,17 @@ export default {
   setup(props, context) {
     const store = useStore()
     const value = ref('请输入项目名称')
+    let key = ref('')
     function add() {
       context.emit('pop', -1)
       store.state.typePop.title = '新增项目类型'
       store.state.typePop.name = '请输入项目名称'
       store.state.typePop.des = '请输入项目介绍'
     }
-    return { value, add }
+    function searchKey() {
+      store.state.typeKey = key
+    }
+    return { value, key, add, searchKey }
   }
 }
 </script>
