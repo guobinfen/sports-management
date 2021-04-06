@@ -11,7 +11,11 @@ export default createStore({
       name: '',
       des: ''
     },
-    typeKey: ''
+    typeKey: '',
+    del: {
+      confirm: false,
+      index: -1
+    }
   },
   mutations: {
   },

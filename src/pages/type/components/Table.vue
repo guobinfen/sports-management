@@ -41,7 +41,8 @@ export default {
     let getData = props.data
     const searchResult = reactive([])
     function del(index) {
-      context.emit('del', index)
+      context.emit('showDel')
+      store.state.del.index = index
     }
     function mod(index, name, des) {
       context.emit('pop', index)

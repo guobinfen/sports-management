@@ -5,7 +5,7 @@
       <common-options></common-options>
       <div class="content">
         <type-search @pop="pop"></type-search>
-        <type-table :data="data" @del="del" @pop="pop"></type-table>
+        <type-table :data="data" @showDel="showDel" @pop="pop"></type-table>
         <type-pop
           v-show="isPop"
           @closePop="closePop"
@@ -13,8 +13,14 @@
           :handlePop="handlePop"
         ></type-pop>
       </div>
+      <common-delhint
+        v-show="isDel"
+        @cancelDel="cancelDel"
+        @del="del"
+      ></common-delhint>
     </div>
-    <common-mask v-show="isPop" @closePop="closePop"></common-mask>
+    <common-mask v-show="isPop" @click="closePop"></common-mask>
+    <common-mask v-show="isDel" @click="closeDel"></common-mask>
   </div>
 </template>
 
@@ -23,20 +29,24 @@ import { reactive, ref } from 'vue'
 import CommonTitle from 'common/Title'
 import CommonOptions from 'common/Options'
 import CommonMask from 'common/Mask'
+import CommonDelhint from 'common/Delhint'
 import TypeSearch from './components/Search'
 import TypeTable from './components/Table'
 import TypePop from './components/Pop'
+import { useStore } from 'vuex'
 export default {
   name: 'Type',
   components: {
     CommonTitle,
     CommonOptions,
     CommonMask,
+    CommonDelhint,
     TypeSearch,
     TypeTable,
     TypePop
   },
   setup() {
+    const store = useStore()
     const data = reactive([{
       id: '1',
       name: '田赛',
@@ -55,17 +65,29 @@ export default {
       des: '表演赛说明'
     }])
     let isPop = ref(false)
+    let isDel = ref(false)
     // 提示pop进行修改还是新增，负数表示新增，非负表示修改的索引号
     let handlePop = ref()
     function pop(index) {
       isPop.value = true
       handlePop.value = index
     }
-    function del(index) {
+    function showDel() {
+      isDel.value = true
+    }
+    function del() {
+      let index = store.state.del.index
       data.splice(index, 1)
+      isDel.value = false
     }
     function closePop() {
       isPop.value = false
+    }
+    function closeDel() {
+      isDel.value = false
+    }
+    function cancelDel() {
+      isDel.value = false
     }
     function change(newData, handle) {
       if (handle < 0) {
@@ -74,7 +96,7 @@ export default {
         data[handle] = newData
       }
     }
-    return { data, isPop, handlePop, pop, del, closePop, change }
+    return { data, isPop, isDel, handlePop, pop, showDel, del, closePop, closeDel, cancelDel, change }
   }
 }
 </script>

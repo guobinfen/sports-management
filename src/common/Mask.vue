@@ -1,16 +1,12 @@
 <template>
-  <div class="mask" @click="close"></div>
+  <div class="mask"></div>
 </template>
 
 <script>
 export default {
   name: 'CommonMask',
-  setup(props, context) {
-    function close() {
-      context.emit('closePop')
-    }
-    return { close }
-  },
+  setup() {
+  }
 }
 </script>
 
