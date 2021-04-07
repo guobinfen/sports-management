@@ -13,7 +13,7 @@
         type="text"
         :placeholder="holder.name"
         :class="{ warnHint: hint.name }"
-        v-model="ctx.name"
+        v-model.trim="ctx.name"
         @blur="nameBlur"
       />
     </div>
@@ -26,7 +26,7 @@
       <textarea
         :placeholder="holder.des"
         :class="{ warnHint: hint.des }"
-        v-model="ctx.des"
+        v-model.trim="ctx.des"
         @blur="desBlur"
       />
     </div>
@@ -45,60 +45,76 @@ export default {
   },
   setup(props, context) {
     const store = useStore()
-    const holder = reactive({
-      title: computed(() => store.state.typePop.title),
-      name: computed(() => store.state.typePop.name),
-      des: computed(() => store.state.typePop.des)
-    })
-    const ctx = reactive({
-      name: '',
-      des: ''
-    })
-    const hint = reactive({
-      name: false,
-      des: false
-    })
-    function close() {
-      context.emit('closePop')
-      ctx.name = ''
-      ctx.des = ''
-    }
-    function submit() {
-      let newData
-      nameBlur()
-      desBlur()
-      if (ctx.name && ctx.des) {
-        newData = {
-          id: '000',
-          name: ctx.name,
-          des: ctx.des
-        }
-        context.emit('changeData', newData, props.handlePop)
-        close()
-        ctx.name = ''
-        ctx.des = ''
-      }
-    }
-    function nameBlur() {
-      if (!ctx.name) {
-        hint.name = true
-      } else {
-        hint.name = false
-      }
-    }
-    function desBlur() {
-      if (!ctx.des) {
-        hint.des = true
-      } else {
-        hint.des = false
-      }
-    }
+    const { holder, hint, ctx } = base(store)
+    const { nameBlur, desBlur } = hintMethods(ctx, hint)
+    const { close, submit } = ctxMethods(props, context, ctx, nameBlur, desBlur)
     onMounted(() => {
       hint.name = false
       hint.des = false
     })
     return { holder, ctx, close, submit, nameBlur, hint, desBlur, onMounted }
   },
+}
+function base(store) {
+  // pop的标题以及placeholder
+  const holder = reactive({
+    title: computed(() => store.state.typePop.title),
+    name: computed(() => store.state.typePop.name),
+    des: computed(() => store.state.typePop.des)
+  })
+  // 是否提示输入为空
+  const hint = reactive({
+    name: false,
+    des: false
+  })
+  // input内容
+  const ctx = reactive({
+    name: '',
+    des: ''
+  })
+  return { holder, hint, ctx }
+}
+function ctxMethods(props, context, ctx, nameBlur, desBlur) {
+  function close() {
+    context.emit('closePop')
+    ctx.name = ''
+    ctx.des = ''
+  }
+  function submit() {
+    let newData
+    nameBlur()
+    desBlur()
+    if (ctx.name && ctx.des) {
+      newData = {
+        id: '000',
+        name: ctx.name,
+        des: ctx.des
+      }
+      context.emit('changeData', newData, props.handlePop)
+      close()
+      ctx.name = ''
+      ctx.des = ''
+    }
+  }
+  return { close, submit }
+}
+// 操作提示输入为空
+function hintMethods(ctx, hint) {
+  function nameBlur() {
+    if (!ctx.name) {
+      hint.name = true
+    } else {
+      hint.name = false
+    }
+  }
+  function desBlur() {
+    if (!ctx.des) {
+      hint.des = true
+    } else {
+      hint.des = false
+    }
+  }
+  return { nameBlur, desBlur }
 }
 </script>
 

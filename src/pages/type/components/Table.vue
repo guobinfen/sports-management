@@ -39,27 +39,11 @@ export default {
   },
   setup(props, context) {
     const store = useStore()
+    // 存放传入的data
     let getData = props.data
     const searchResult = reactive([])
-    function del(index) {
-      context.emit('showDel')
-      store.state.del.index = index
-    }
-    function mod(index, name, des) {
-      context.emit('pop', index)
-      store.state.typePop.title = '修改项目类型'
-      store.state.typePop.name = name
-      store.state.typePop.des = des
-    }
-    // watch(() => store.state.typeKey, () => {
-    //   searchResult.splice(0)
-    //   getData.forEach(val => {
-    //     if (val.name.indexOf(store.state.typeKey) > -1) {
-    //       let arr = val
-    //       searchResult.push(arr)
-    //     }
-    //   })
-    // })
+    const { del, mod } = tabelMethods(context, store)
+    // 当数据改变重新渲染
     watch(props.data, () => {
       getData = props.data
       searchResult.splice(0)
@@ -83,6 +67,21 @@ export default {
       del, mod, searchResult
     }
   }
+}
+function tabelMethods(context, store) {
+  // 点击删除键
+  function del(index) {
+    context.emit('showDel')
+    store.state.del.index = index
+  }
+  // 点击修改键
+  function mod(index, name, des) {
+    context.emit('pop', index)
+    store.state.typePop.title = '修改项目类型'
+    store.state.typePop.name = name
+    store.state.typePop.des = des
+  }
+  return { del, mod }
 }
 </script>
 
