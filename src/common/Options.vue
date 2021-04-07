@@ -18,9 +18,11 @@
 
 <script>
 import { reactive } from 'vue'
+import { useRouter } from 'vue-router';
 export default {
   name: 'CommonOptions',
   setup() {
+    const router = useRouter()
     const data = reactive({
       options: ['项目类型', '比赛项目', '参赛纪录', '运动员管理', '操作员管理'],
     })
@@ -29,6 +31,20 @@ export default {
     })
     function handleClick(index) {
       control.isClicked = index
+      switch (index) {
+        case 1:
+          router.push('/competition')
+          break
+        case 2:
+          router.push('/plog')
+          break
+        case 3:
+          router.push('/player')
+          break
+        case 4:
+          router.push('/admin')
+          break
+      }
     }
     return { data, control, handleClick }
   }
