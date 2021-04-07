@@ -2,7 +2,7 @@
   <div class="container">
     <common-title></common-title>
     <div class="main">
-      <common-options></common-options>
+      <common-options :index="index"></common-options>
       <div class="content">
         <type-search @pop="pop"></type-search>
         <type-table :data="data" @showDel="showDel" @pop="pop"></type-table>
@@ -47,6 +47,7 @@ export default {
     TypePop
   },
   setup() {
+    const index = 0
     const { data, store } = base()
     const { isDel, showDel, closeDel, cancelDel } = delHintMethods()
     const { isPop, handlePop, pop, closePop, change, del } = popMethods(data, store, isDel)
@@ -55,7 +56,7 @@ export default {
     onMounted(() => {
       getTypeInfo()
     })
-    return { data, isPop, isDel, handlePop, pop, showDel, del, closePop, closeDel, cancelDel, change }
+    return { index, data, isPop, isDel, handlePop, pop, showDel, del, closePop, closeDel, cancelDel, change }
   }
 }
 function base() {

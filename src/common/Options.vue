@@ -21,17 +21,22 @@ import { reactive } from 'vue'
 import { useRouter } from 'vue-router';
 export default {
   name: 'CommonOptions',
-  setup() {
+  props: {
+    index: Number
+  },
+  setup(props) {
     const router = useRouter()
     const data = reactive({
       options: ['项目类型', '比赛项目', '参赛纪录', '运动员管理', '操作员管理'],
     })
     const control = reactive({
-      isClicked: 0
+      isClicked: props.index
     })
     function handleClick(index) {
-      control.isClicked = index
       switch (index) {
+        case 0:
+          router.push('/type')
+          break
         case 1:
           router.push('/competition')
           break
