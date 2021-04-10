@@ -6,4 +6,5 @@ import 'styles/reset.css'
 import 'styles/border.css'
 import 'styles/iconfont.css'
 
+
 createApp(App).use(store).use(router).mount('#app')

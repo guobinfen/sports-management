@@ -12,7 +12,7 @@ import { ref } from 'vue'
 import { useStore } from 'vuex'
 import bus from '@/bus/bus'
 export default {
-  name: 'TypeSearch',
+  name: 'CompetitionSearch',
   setup(props, context) {
     const store = useStore()
     const value = ref('请输入项目名称')

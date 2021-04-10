@@ -41,7 +41,7 @@ import { onMounted, reactive, watch } from 'vue'
 import { useStore } from 'vuex'
 import bus from '@/bus/bus'
 export default {
-  name: "TypeTable",
+  name: "CompetitionTable",
   props: {
     data: Array
   },

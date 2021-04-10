@@ -4,6 +4,20 @@
       {{ holder.title }}
       <span class="exit iconfont" @click="close">&#xe7a0;</span>
     </div>
+    <div class="type">
+      <div class="wrapper">
+        <span class="icon">*</span>
+        所属项目:
+      </div>
+      <el-button>button</el-button>
+      <!-- <input
+        type="text"
+        :placeholder="holder.name"
+        :class="{ warnHint: hint.name }"
+        v-model.trim="ctx.name"
+        @blur="nameBlur"
+      /> -->
+    </div>
     <div class="name">
       <div class="wrapper">
         <span class="icon">*</span>
@@ -21,7 +35,7 @@
     <div class="des">
       <div class="wrapper">
         <span class="icon">*</span>
-        项目介绍:
+        赛程说明:
       </div>
       <textarea
         :placeholder="holder.des"
@@ -30,7 +44,7 @@
         @blur="desBlur"
       />
     </div>
-    <span class="hint" v-show="hint.des">项目介绍不得为空</span>
+    <span class="hint" v-show="hint.des">赛程说明</span>
     <button @click.prevent="submit">确认</button>
   </div>
 </template>
@@ -39,7 +53,7 @@
 import { reactive, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 export default {
-  name: 'TypePop',
+  name: 'CompetitionPop',
   props: {
     handlePop: Number
   },
@@ -149,11 +163,19 @@ function hintMethods(ctx, hint) {
     }
   }
 
-  .name, .des {
+  .type, .name, .des {
     width: 340px;
     margin-top: 10px;
     line-height: 24px;
     zoom: 1;
+
+    #type {
+      float: left;
+      width: 170px;
+      height: 24px;
+      margin-left: 4px;
+      input();
+    }
 
     .wrapper {
       float: left;
@@ -218,6 +240,3 @@ function hintMethods(ctx, hint) {
   }
 }
 </style>
-
-
-
