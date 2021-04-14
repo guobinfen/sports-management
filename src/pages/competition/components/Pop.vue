@@ -4,132 +4,203 @@
       {{ holder.title }}
       <span class="exit iconfont" @click="close">&#xe7a0;</span>
     </div>
-    <div class="name">
-      <div class="wrapper">
-        <span class="icon">*</span>
-        名称:
+    <el-form
+      :model="ruleForm"
+      :rules="rules"
+      ref="formName"
+      label-width="100px"
+      class="demo-ruleForm"
+    >
+      <div class="type">
+        <el-form-item label="所属项目" prop="type">
+          <el-select v-model="ruleForm.type" placeholder="请选择">
+            <el-option
+              v-for="item in type"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
       </div>
-      <input
-        type="text"
-        :placeholder="holder.name"
-        :class="{ warnHint: hint.name }"
-        v-model.trim="ctx.name"
-        @blur="nameBlur"
-      />
-    </div>
-    <span class="hint" v-show="hint.name">输入名称不得为空</span>
-    <div class="des">
-      <div class="wrapper">
-        <span class="icon">*</span>
-        项目介绍:
+      <div class="name">
+        <el-form-item label="名称:" prop="name">
+          <el-input
+            v-model.trim="ruleForm.name"
+            :placeholder="holder.name"
+          ></el-input>
+        </el-form-item>
       </div>
-      <textarea
-        :placeholder="holder.des"
-        :class="{ warnHint: hint.des }"
-        v-model.trim="ctx.des"
-        @blur="desBlur"
-      />
-    </div>
-    <span class="hint" v-show="hint.des">项目介绍不得为空</span>
-    <button @click.prevent="submit">确认</button>
+      <div class="date">
+        <el-form-item label="日期:" required>
+          <el-form-item prop="date">
+            <el-date-picker
+              v-model="ruleForm.date"
+              type="date"
+              placeholder="选择日期"
+              format="YYYY-MM-DD"
+            >
+            </el-date-picker>
+          </el-form-item>
+        </el-form-item>
+      </div>
+      <div class="time">
+        <el-form-item label="开始时间:" required>
+          <el-form-item prop="startTime">
+            <el-time-select
+              placeholder="起始时间"
+              v-model="ruleForm.startTime"
+              default-value="startDefault"
+              start="08:30"
+              step="00:15"
+              end="18:30"
+            ></el-time-select>
+          </el-form-item>
+        </el-form-item>
+      </div>
+      <div class="time">
+        <el-form-item label="结束时间:" required>
+          <el-form-item prop="endTime">
+            <el-time-select
+              placeholder="结束时间"
+              v-model="ruleForm.endTime"
+              start="08:30"
+              step="00:15"
+              end="18:30"
+              :minTime="ruleForm.startTime"
+            ></el-time-select>
+          </el-form-item>
+        </el-form-item>
+      </div>
+      <div class="des">
+        <el-form-item label="赛程说明:" prop="des">
+          <el-input
+            type="textarea"
+            :placeholder="holder.des"
+            v-model.trim="ruleForm.des"
+          ></el-input>
+        </el-form-item>
+      </div>
+      <div class="submit">
+        <el-form-item>
+          <el-button type="primary" @click="submitForm">立即创建</el-button>
+        </el-form-item>
+      </div>
+    </el-form>
   </div>
 </template>
 
 <script>
-import { reactive, computed, onMounted } from 'vue'
+import { reactive, ref, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 export default {
-  name: 'TypePop',
+  name: 'CompetitionPop',
   props: {
-    handlePop: Number
+    handlePop: Object,
+    type: Array
   },
   setup(props, context) {
     const store = useStore()
-    const { holder, hint, ctx } = base(store)
-    const { nameBlur, desBlur } = hintMethods(ctx, hint)
-    const { close, submit } = ctxMethods(props, context, ctx, nameBlur, desBlur)
+    const startDefault = ref('')
+    const { holder, ctx } = base(store)
+    const { ruleForm, formName, rules, submitForm } = formValidation(props, context, close)
+    function close() {
+      context.emit('closePop')
+    }
     onMounted(() => {
-      hint.name = false
-      hint.des = false
+      if (props.handlePop.index > -1) {
+        for (let item in ruleForm) {
+          ruleForm[item] = props.handlePop.data[item]
+        }
+      }
     })
-    return { holder, ctx, close, submit, nameBlur, hint, desBlur, onMounted }
+    return {
+      holder, ctx, ruleForm, formName, rules, submitForm, close, onMounted, startDefault
+    }
   },
 }
 function base(store) {
   // pop的标题以及placeholder
   const holder = reactive({
-    title: computed(() => store.state.typePop.title),
-    name: computed(() => store.state.typePop.name),
-    des: computed(() => store.state.typePop.des)
+    title: computed(() => store.state.competitionPop.title)
   })
-  // 是否提示输入为空
-  const hint = reactive({
-    name: false,
-    des: false
-  })
-  // input内容
+  // 组件内容
   const ctx = reactive({
+    type: '',
     name: '',
+    date: '',
+    startTime: '',
+    endTime: '',
     des: ''
   })
-  return { holder, hint, ctx }
+  return { holder, ctx }
 }
-function ctxMethods(props, context, ctx, nameBlur, desBlur) {
-  function close() {
-    context.emit('closePop')
-    ctx.name = ''
-    ctx.des = ''
-  }
-  function submit() {
-    let newData
-    nameBlur()
-    desBlur()
-    if (ctx.name && ctx.des) {
-      newData = {
-        id: '000',
-        name: ctx.name,
-        des: ctx.des
+function formValidation(props, context, close) {
+  const ruleForm = reactive({
+    type: '',
+    name: '',
+    date: '',
+    startTime: '',
+    endTime: '',
+    des: ''
+  })
+  const formName = ref(null)
+  const rules = reactive({
+    type: [
+      { required: true, message: '请选择项目类型', trigger: 'change' }
+    ],
+    name: [
+      { required: true, message: '请输入项目名称', trigger: 'blur' },
+    ],
+    date: [
+      { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+    ],
+    startTime: [
+      { required: true, message: '请选择开始时间', trigger: 'change' }
+    ],
+    endTime: [
+      { required: true, message: '请选择结束时间', trigger: 'change' }
+    ],
+    des: [
+      { required: true, message: '请填写项目介绍', trigger: 'blur' }
+    ]
+  })
+  function submitForm() {
+    formName.value.validate((valid) => {
+      if (valid) {
+        let arr = []
+        arr.push(ruleForm)
+        arr.push(props.handlePop.index)
+        context.emit('changeData', arr)
+        close()
+      } else {
+        console.log('error submit!!');
+        return false;
       }
-      context.emit('changeData', newData, props.handlePop)
-      close()
-      ctx.name = ''
-      ctx.des = ''
-    }
+    })
   }
-  return { close, submit }
-}
-// 操作提示输入为空
-function hintMethods(ctx, hint) {
-  function nameBlur() {
-    if (!ctx.name) {
-      hint.name = true
-    } else {
-      hint.name = false
-    }
-  }
-  function desBlur() {
-    if (!ctx.des) {
-      hint.des = true
-    } else {
-      hint.des = false
-    }
-  }
-  return { nameBlur, desBlur }
+  return { ruleForm, formName, rules, submitForm }
 }
 </script>
 
 <style lang="stylus" scoped>
 @import '~styles/mixins.styl';
 
+.box>>>.el-input__inner {
+  height: 30px;
+  line-height: 30px;
+}
+
 .box {
   position: fixed;
   z-index: 2;
-  top: 15%;
+  top: 10%;
   left: 50%;
-  width: 350px;
+  width: 400px;
   padding-top: 16px;
   padding-left: 15px;
-  padding-bottom: 16px;
+  padding-bottom: 10px;
   background-color: #fff;
   transform: translateX(-50%);
 
@@ -149,75 +220,26 @@ function hintMethods(ctx, hint) {
     }
   }
 
-  .name, .des {
+  .type, .name, .date, .time {
     width: 340px;
-    margin-top: 10px;
-    line-height: 24px;
+    height: 60px;
+    line-height: 30px;
     zoom: 1;
-
-    .wrapper {
-      float: left;
-      width: 80px;
-      text-align: right;
-    }
 
     &:after {
       floatClear();
     }
-
-    input {
-      float: left;
-      height: 24px;
-      margin-left: 4px;
-      input();
-    }
-
-    input:focus {
-      border-color: #409eff;
-    }
-
-    input::-webkit-input-placeholder {
-      color: #c4c4cc;
-    }
-
-    textarea::-webkit-input-placeholder {
-      color: #c4c4cc;
-    }
-
-    textarea {
-      width: 160px;
-      height: 80px;
-      margin-left: 4px;
-      input();
-    }
-
-    .warnHint {
-      border-color: #f56c6c !important;
-    }
   }
 
-  .hint {
-    margin-left: 90px;
-    font-size: 12px;
-    color: #f56c6c;
+  .des {
+    width: 340px;
+    margin-top: 4px;
+    line-height: 30px;
+    zoom: 1;
   }
 
-  .icon {
-    color: #f56c6c;
-  }
-
-  button {
-    display: block;
-    button();
-    margin-top: 12px;
-    margin-left: 82px;
-  }
-
-  button:hover {
-    buttonHover();
+  .submit {
+    margin-top: 24px;
   }
 }
 </style>
-
-
-

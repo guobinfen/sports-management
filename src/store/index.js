@@ -14,6 +14,9 @@ export default createStore({
     del: {
       confirm: false,
       index: -1
+    },
+    competitionPop: {
+      title: ''
     }
   },
   mutations: {

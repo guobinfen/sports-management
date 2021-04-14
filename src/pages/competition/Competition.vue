@@ -4,14 +4,19 @@
     <div class="main">
       <common-options :index="index"></common-options>
       <div class="content">
-        <type-search @pop="pop"></type-search>
-        <type-table :data="data" @showDel="showDel" @pop="pop"></type-table>
-        <type-pop
+        <competition-search @pop="pop"></competition-search>
+        <competition-table
+          :data="data"
+          @showDel="showDel"
+          @pop="pop"
+        ></competition-table>
+        <competition-pop
           v-if="isPop"
           @closePop="closePop"
-          @changeData="change"
+          @changeData="changeData"
           :handlePop="handlePop"
-        ></type-pop>
+          :type="type"
+        ></competition-pop>
       </div>
       <common-delhint
         v-show="isDel"
@@ -30,9 +35,9 @@ import CommonTitle from 'common/Title'
 import CommonOptions from 'common/Options'
 import CommonMask from 'common/Mask'
 import CommonDelhint from 'common/Delhint'
-import TypeSearch from './components/Search'
-import TypeTable from './components/Table'
-import TypePop from './components/Pop'
+import CompetitionSearch from './components/Search'
+import CompetitionTable from './components/Table'
+import CompetitionPop from './components/Pop'
 import { useStore } from 'vuex'
 import axios from 'axios'
 export default {
@@ -42,27 +47,32 @@ export default {
     CommonOptions,
     CommonMask,
     CommonDelhint,
-    TypeSearch,
-    TypeTable,
-    TypePop
+    CompetitionSearch,
+    CompetitionTable,
+    CompetitionPop
   },
   setup() {
     const index = 1
-    const { data, store } = base()
+    const { data, type, store } = base()
     const { isDel, showDel, closeDel, cancelDel } = delHintMethods()
-    const { isPop, handlePop, pop, closePop, change, del } = popMethods(data, store, isDel)
-    const { getTypeInfo } = axiosMethods(data)
+    const { isPop, handlePop, pop, closePop, changeData, del } = popMethods(data, store, isDel)
+    const { getTypeInfo, getCompetitionInfo } = axiosMethods(data, type)
 
     onMounted(() => {
       getTypeInfo()
+      getCompetitionInfo()
     })
-    return { index, data, isPop, isDel, handlePop, pop, showDel, del, closePop, closeDel, cancelDel, change }
+    return {
+      index, data, type, isDel, showDel, closeDel, cancelDel,
+      isPop, handlePop, pop, closePop, changeData, del
+    }
   }
 }
 function base() {
   const data = reactive([])
+  const type = reactive([])
   const store = useStore()
-  return { data, store }
+  return { data, type, store }
 }
 function delHintMethods() {
   const isDel = ref(false)
@@ -80,20 +90,29 @@ function delHintMethods() {
 function popMethods(data, store, isDel) {
   const isPop = ref(false)
   // 提示pop进行修改还是新增，负数表示新增，非负表示修改的索引号
-  const handlePop = ref()
+  const handlePop = ref({})
+  const popData = reactive({})
   function pop(index) {
     isPop.value = true
-    handlePop.value = index
+    handlePop.value.index = index
+    if (index > -1) {
+      handlePop.value.data = data[index]
+    } else {
+      handlePop.value.data = {}
+    }
+
   }
   function closePop() {
     isPop.value = false
   }
   // 添加/修改数据
-  function change(newData, handle) {
-    if (handle < 0) {
+  function changeData(arr) {
+    let newData = arr[0]
+    let index = arr[1]
+    if (index < 0) {
       data.push(newData)
-    } else if (handle >= 0) {
-      data[handle] = newData
+    } else if (index >= 0) {
+      data[index] = newData
     }
   }
   // 删除数据
@@ -102,19 +121,28 @@ function popMethods(data, store, isDel) {
     data.splice(index, 1)
     isDel.value = false
   }
-  return { isPop, handlePop, pop, closePop, change, del }
+  return { isPop, handlePop, popData, pop, closePop, changeData, del }
 }
-function axiosMethods(data) {
+function axiosMethods(data, type) {
   function getTypeInfo() {
-    axios.get('/api/competition.json').then(getTypeInfoSucc)
+    axios.get('/api/type.json').then(getTypeInfoSucc)
   }
   function getTypeInfoSucc(res) {
+    res = res.data
+    if (res.ret && res.data) {
+      type.push(...res.data.data)
+    }
+  }
+  function getCompetitionInfo() {
+    axios.get('/api/competition.json').then(getCompetitionInfoSucc)
+  }
+  function getCompetitionInfoSucc(res) {
     res = res.data
     if (res.ret && res.data) {
       data.push(...res.data.data)
     }
   }
-  return { getTypeInfo }
+  return { getTypeInfo, getCompetitionInfo }
 }
 </script>
 

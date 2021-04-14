@@ -8,7 +8,7 @@
         "name": "跳远",
         "type": "田赛",
         "startTime": "8:30",
-        "endTime": "11:50",
+        "endTime": "11:00",
         "des": "立定跳远"
       },
       {
@@ -16,8 +16,8 @@
         "date": "2020-1-22",
         "name": "100m",
         "type": "径赛",
-        "startTime": "11:50",
-        "endTime": "15:10",
+        "startTime": "11:30",
+        "endTime": "15:00",
         "des": "100m冲刺"
       },
       {
@@ -25,7 +25,7 @@
         "date": "2020-1-22",
         "name": "铅球",
         "type": "田赛",
-        "startTime": "15:10",
+        "startTime": "11:30",
         "endTime": "18:30",
         "des": "扔铅球"
       },
