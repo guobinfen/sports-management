@@ -106,7 +106,7 @@ function popMethods(data, store, isDel) {
 }
 function axiosMethods(data) {
   function getPlayerInfo() {
-    axios.get('/api/type.json').then(getPlayerInfoSucc)
+    axios.get('/api/player.json').then(getPlayerInfoSucc)
   }
   function getPlayerInfoSucc(res) {
     res = res.data

@@ -18,12 +18,12 @@
           v-for="(item, index) of searchResult"
           :key="item.id"
         >
-          <td class="number">001</td>
-          <td class="name">赵一</td>
-          <td class="sex">男</td>
-          <td class="birth">2019-3-8</td>
-          <td class="stuNumber">17011</td>
-          <td class="class">001</td>
+          <td class="number">{{ item.number }}</td>
+          <td class="name">{{ item.name }}</td>
+          <td class="sex">{{ item.sex }}</td>
+          <td class="birth">{{ item.birth }}</td>
+          <td class="stuNumber">{{ item.stuNumber }}</td>
+          <td class="class">{{ item.class }}</td>
           <td class="operate">
             <span class="modify" @click="mod(index)">修改</span>
             <span class="del" @click="del(index)">删除</span>
