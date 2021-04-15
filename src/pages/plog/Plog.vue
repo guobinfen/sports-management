@@ -1,61 +1,146 @@
 <template>
-  <div class="block">
-    <el-date-picker
-      v-model="value1"
-      type="daterange"
-      range-separator="至"
-      start-placeholder="开始日期"
-      end-placeholder="结束日期"
-      ref="date"
-    >
-    </el-date-picker>
-    <button @click="click">确认</button>
+  <div class="container">
+    <common-title></common-title>
+    <div class="main">
+      <common-options :index="index"></common-options>
+      <div class="content">
+        <plog-search @pop="pop"></plog-search>
+        <plog-table @showDel="showDel" @pop="pop" :data="data"></plog-table>
+        <plog-pop
+          v-if="isPop"
+          @closePop="closePop"
+          @add="add"
+          :dataComp="dataComp"
+          :dataPlayer="dataPlayer"
+        ></plog-pop>
+      </div>
+      <common-delhint
+        v-show="isDel"
+        @cancelDel="cancelDel"
+        @del="del"
+      ></common-delhint>
+    </div>
+    <common-mask v-show="isPop" @click="closePop"></common-mask>
+    <common-mask v-show="isDel" @click="closeDel"></common-mask>
   </div>
 </template>
 
 <script>
-import { reactive, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue'
+import CommonTitle from 'common/Title'
+import CommonOptions from 'common/Options'
+import CommonMask from 'common/Mask'
+import CommonDelhint from 'common/Delhint'
+import PlogSearch from './components/Search'
+import PlogTable from './components/Table'
+import PlogPop from './components/Pop'
+import { useStore } from 'vuex'
+import axios from 'axios'
 export default {
   name: 'Plog',
+  components: {
+    CommonTitle,
+    CommonOptions,
+    CommonMask,
+    CommonDelhint,
+    PlogSearch,
+    PlogTable,
+    PlogPop
+  },
   setup() {
-    const shortcuts = reactive([{
-      text: '最近一周',
-      value: (() => {
-        const end = new Date()
-        const start = new Date()
-        start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-        return [start, end]
-      })(),
-    }, {
-      text: '最近一个月',
-      value: (() => {
-        const end = new Date()
-        const start = new Date()
-        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-        return [start, end]
-      })(),
-    }, {
-      text: '最近三个月',
-      value: (() => {
-        const end = new Date()
-        const start = new Date()
-        start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-        return [start, end]
-      })(),
-    }])
-    const value1 = ref('')
-    const value2 = ref('')
-    const date = ref(null)
-    function click() {
-      console.log(date.value)
+    const index = 2
+    const { data, dataComp, dataPlayer, store } = base()
+    const { isDel, showDel, closeDel, cancelDel } = delHintMethods()
+    const { isPop, pop, closePop, add, del } = popMethods(data, dataComp, dataPlayer, store, isDel)
+    const { getCompetitonInfo, getPlayerInfo } = axiosMethods(dataComp, dataPlayer)
+
+    onMounted(() => {
+      getCompetitonInfo()
+      getPlayerInfo()
+    })
+    return {
+      index, data, dataComp, dataPlayer, isDel, showDel, closeDel, cancelDel,
+      isPop, pop, closePop, add, del
     }
-    return { shortcuts, value1, value2, date, click }
   }
+}
+function base() {
+  const data = reactive([])
+  const dataComp = reactive([])
+  const dataPlayer = reactive([])
+  const store = useStore()
+  return { data, dataComp, dataPlayer, store }
+}
+function delHintMethods() {
+  const isDel = ref(false)
+  function showDel() {
+    isDel.value = true
+  }
+  function closeDel() {
+    isDel.value = false
+  }
+  function cancelDel() {
+    isDel.value = false
+  }
+  return { isDel, showDel, closeDel, cancelDel }
+}
+function popMethods(data, store, isDel) {
+  const isPop = ref(false)
+  // 提示pop进行修改还是新增，负数表示新增，非负表示修改的索引号
+  function pop() {
+    isPop.value = true
+  }
+  function closePop() {
+    isPop.value = false
+  }
+  // 添加/修改数据
+  function add(object) {
+    data.push(object)
+  }
+  // 删除数据
+  function del() {
+    let index = store.state.del.index
+    data.splice(index, 1)
+    isDel.value = false
+  }
+  return { isPop, pop, closePop, add, del }
+}
+function axiosMethods(dataComp, dataPlayer) {
+  function getCompetitonInfo() {
+    axios.get('/api/competition.json').then(getCompetitonInfoSucc)
+  }
+  function getCompetitonInfoSucc(res) {
+    res = res.data
+    if (res.ret && res.data) {
+      dataComp.push(...res.data.data)
+    }
+  }
+  function getPlayerInfo() {
+    axios.get('/api/player.json').then(getPlayerInfoSucc)
+  }
+  function getPlayerInfoSucc(res) {
+    res = res.data
+    if (res.ret && res.data) {
+      dataPlayer.push(...res.data.data)
+    }
+  }
+  return { getCompetitonInfo, getPlayerInfo }
 }
 </script>
 
-<style>
+<style lang="stylus" scoped>
+.main>>>.optionsContainer {
+  height: 100vh !important;
+}
+
+.main {
+  display: flex;
+
+  .content {
+    flex: 1;
+    height: 100vh;
+    background-color: #fafbfc;
+  }
+}
 </style>
 
-
-<style lang="stylus" scoped></style>

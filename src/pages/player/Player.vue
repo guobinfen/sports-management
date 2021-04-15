@@ -143,4 +143,3 @@ function axiosMethods(data) {
   }
 }
 </style>
-

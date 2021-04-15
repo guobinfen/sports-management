@@ -45,9 +45,9 @@ export default {
   },
   setup(props, context) {
     const store = useStore()
-    const { holder, hint, ctx } = base
+    const { holder, hint, ctx } = base(store)
     const { nameBlur, desBlur } = hintMethods(ctx, hint)
-    const { close, submit } = ctxMethods(context, ctx, nameBlur, desBlur)
+    const { close, submit } = ctxMethods(props, context, ctx, nameBlur, desBlur)
     onMounted(() => {
       hint.name = false
       hint.des = false
@@ -55,7 +55,7 @@ export default {
     return { holder, ctx, close, submit, nameBlur, hint, desBlur, onMounted }
   },
 }
-function base() {
+function base(store) {
   // pop的标题以及placeholder
   const holder = reactive({
     title: computed(() => store.state.title),
@@ -74,7 +74,7 @@ function base() {
   })
   return { holder, hint, ctx }
 }
-function ctxMethods(context, ctx, nameBlur, desBlur) {
+function ctxMethods(props, context, ctx, nameBlur, desBlur) {
   function close() {
     context.emit('closePop')
     ctx.name = ''
