@@ -127,7 +127,7 @@ function axiosMethods(data, type) {
   function getTypeInfo() {
     axios.get('/api/type.json').then(getTypeInfoSucc)
   }
-  function getCompetitionInfoSucc(res) {
+  function getTypeInfoSucc(res) {
     res = res.data
     if (res.ret && res.data) {
       type.push(...res.data.data)

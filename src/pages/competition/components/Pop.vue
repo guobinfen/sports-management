@@ -84,7 +84,7 @@
       </div>
       <div class="submit">
         <el-form-item>
-          <el-button type="primary" @click="submitForm">立即创建</el-button>
+          <el-button type="primary" @click="submitForm">确认</el-button>
         </el-form-item>
       </div>
     </el-form>
@@ -220,33 +220,12 @@ function formValidation(props, context, close) {
     }
   }
 
-<<<<<<< HEAD
-  .type, .name, .des {
-=======
   .type, .name, .date, .time {
->>>>>>> origin/competition-pop
     width: 340px;
     height: 60px;
     line-height: 30px;
     zoom: 1;
 
-<<<<<<< HEAD
-    #type {
-      float: left;
-      width: 170px;
-      height: 24px;
-      margin-left: 4px;
-      input();
-    }
-
-    .wrapper {
-      float: left;
-      width: 80px;
-      text-align: right;
-    }
-
-=======
->>>>>>> origin/competition-pop
     &:after {
       floatClear();
     }

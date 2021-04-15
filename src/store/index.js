@@ -17,6 +17,9 @@ export default createStore({
     },
     competitionPop: {
       title: ''
+    },
+    playerPop: {
+      title: ''
     }
   },
   mutations: {
