@@ -103,7 +103,7 @@ export default {
   setup(props, context) {
     const store = useStore()
     const startDefault = ref('')
-    const { holder, ctx } = base(store)
+    const { holder } = base(store)
     const { ruleForm, formName, rules, submitForm } = formValidation(props, context, close)
     function close() {
       context.emit('closePop')
@@ -116,25 +116,17 @@ export default {
       }
     })
     return {
-      holder, ctx, ruleForm, formName, rules, submitForm, close, onMounted, startDefault
+      holder, ruleForm, formName, rules, submitForm, close, onMounted, startDefault
     }
   },
 }
 function base(store) {
   // pop的标题以及placeholder
   const holder = reactive({
-    title: computed(() => store.state.competitionPop.title)
+    title: computed(() => store.state.title)
   })
   // 组件内容
-  const ctx = reactive({
-    type: '',
-    name: '',
-    date: '',
-    startTime: '',
-    endTime: '',
-    des: ''
-  })
-  return { holder, ctx }
+  return { holder }
 }
 function formValidation(props, context, close) {
   const ruleForm = reactive({

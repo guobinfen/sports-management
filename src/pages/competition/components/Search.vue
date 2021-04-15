@@ -20,7 +20,7 @@ export default {
     // 新增数据
     function add() {
       context.emit('pop', -1)
-      store.state.competitionPop.title = '新增项目类型'
+      store.state.title = '新增项目类型'
     }
 
     return { value, key, add, searchKey }

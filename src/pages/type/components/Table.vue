@@ -77,7 +77,7 @@ function tabelMethods(context, store) {
   // 点击修改键
   function mod(index, name, des) {
     context.emit('pop', index)
-    store.state.typePop.title = '修改项目类型'
+    store.state.title = '修改项目类型'
     store.state.typePop.name = name
     store.state.typePop.des = des
   }

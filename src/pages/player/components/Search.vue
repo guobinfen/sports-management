@@ -15,12 +15,12 @@ export default {
   name: 'PlayerSearch',
   setup(props, context) {
     const store = useStore()
-    const value = ref('请输入项目名称')
+    const value = ref('请输入运动员名称')
     const { key, searchKey } = searchMethods()
     // 新增数据
     function add() {
       context.emit('pop', -1)
-      store.state.playerPop.title = '新增项目类型'
+      store.state.title = '新增项目类型'
     }
     return { value, key, add, searchKey }
   }

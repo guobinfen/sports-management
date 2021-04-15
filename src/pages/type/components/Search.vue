@@ -20,7 +20,7 @@ export default {
     // 新增数据
     function add() {
       context.emit('pop', -1)
-      store.state.typePop.title = '新增项目类型'
+      store.state.title = '新增项目类型'
       store.state.typePop.name = '请输入项目名称'
       store.state.typePop.des = '请输入项目介绍'
     }

@@ -90,15 +90,17 @@ function delHintMethods() {
 function popMethods(data, store, isDel) {
   const isPop = ref(false)
   // 提示pop进行修改还是新增，负数表示新增，非负表示修改的索引号
-  const handlePop = ref({})
-  const popData = reactive({})
+  const handlePop = reactive({
+    index: -1,
+    data: {}
+  })
   function pop(index) {
     isPop.value = true
-    handlePop.value.index = index
+    handlePop.index = index
     if (index > -1) {
-      handlePop.value.data = data[index]
+      handlePop.data = data[index]
     } else {
-      handlePop.value.data = {}
+      handlePop.data = {}
     }
 
   }
@@ -121,7 +123,7 @@ function popMethods(data, store, isDel) {
     data.splice(index, 1)
     isDel.value = false
   }
-  return { isPop, handlePop, popData, pop, closePop, changeData, del }
+  return { isPop, handlePop, pop, closePop, changeData, del }
 }
 function axiosMethods(data, type) {
   function getTypeInfo() {

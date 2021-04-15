@@ -7,7 +7,6 @@ export default createStore({
       pwd: '123'
     },
     typePop: {
-      title: '',
       name: '',
       des: ''
     },
@@ -15,12 +14,7 @@ export default createStore({
       confirm: false,
       index: -1
     },
-    competitionPop: {
-      title: ''
-    },
-    playerPop: {
-      title: ''
-    }
+    title: ''
   },
   mutations: {
   },

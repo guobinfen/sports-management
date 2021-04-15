@@ -58,7 +58,7 @@ export default {
 function base() {
   // pop的标题以及placeholder
   const holder = reactive({
-    title: computed(() => store.state.typePop.title),
+    title: computed(() => store.state.title),
     name: computed(() => store.state.typePop.name),
     des: computed(() => store.state.typePop.des)
   })

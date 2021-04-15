@@ -77,13 +77,13 @@ export default {
 function tabelMethods(context, store) {
   // 点击删除键
   function del(index) {
-    context.emit('showDel')
     store.state.del.index = index
+    context.emit('showDel', index)
   }
   // 点击修改键
-  function mod(index, name, des) {
+  function mod(index) {
     context.emit('pop', index)
-    store.state.playerPop.title = '修改项目类型'
+    store.state.title = '修改项目类型'
   }
   return { del, mod }
 }
