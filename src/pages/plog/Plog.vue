@@ -5,7 +5,11 @@
       <common-options :index="index"></common-options>
       <div class="content">
         <plog-search @pop="pop"></plog-search>
-        <plog-table @showDel="showDel" @pop="pop" :data="data"></plog-table>
+        <plog-table
+          @showDel="showDel"
+          @register="register"
+          :data="data"
+        ></plog-table>
         <plog-pop
           v-if="isPop"
           @closePop="closePop"
@@ -13,6 +17,13 @@
           :dataComp="dataComp"
           :dataPlayer="dataPlayer"
         ></plog-pop>
+        <plog-register
+          v-if="isRegister"
+          @closeRegister="closeRegister"
+          @modGrade="modGrade"
+          :changeIndex="changeIndex"
+          :dataGrade="dataGrade"
+        ></plog-register>
       </div>
       <common-delhint
         v-show="isDel"
@@ -22,6 +33,7 @@
     </div>
     <common-mask v-show="isPop" @click="closePop"></common-mask>
     <common-mask v-show="isDel" @click="closeDel"></common-mask>
+    <common-mask v-show="isRegister" @click="closeRegister"></common-mask>
   </div>
 </template>
 
@@ -34,6 +46,7 @@ import CommonDelhint from 'common/Delhint'
 import PlogSearch from './components/Search'
 import PlogTable from './components/Table'
 import PlogPop from './components/Pop'
+import PlogRegister from './components/Register'
 import { useStore } from 'vuex'
 import axios from 'axios'
 export default {
@@ -45,13 +58,15 @@ export default {
     CommonDelhint,
     PlogSearch,
     PlogTable,
-    PlogPop
+    PlogPop,
+    PlogRegister
   },
   setup() {
     const index = 2
     const { data, dataComp, dataPlayer, store } = base()
     const { isDel, showDel, closeDel, cancelDel } = delHintMethods()
-    const { isPop, pop, closePop, add, del } = popMethods(data, dataComp, dataPlayer, store, isDel)
+    const { isPop, pop, closePop, add, del } = popMethods(data, store, isDel)
+    const { isRegister, changeIndex, dataGrade, register, closeRegister, modGrade } = registerMethods(data)
     const { getCompetitonInfo, getPlayerInfo } = axiosMethods(dataComp, dataPlayer)
 
     onMounted(() => {
@@ -60,7 +75,7 @@ export default {
     })
     return {
       index, data, dataComp, dataPlayer, isDel, showDel, closeDel, cancelDel,
-      isPop, pop, closePop, add, del
+      isPop, pop, closePop, add, del, isRegister, changeIndex, dataGrade, register, closeRegister, modGrade
     }
   }
 }
@@ -86,7 +101,6 @@ function delHintMethods() {
 }
 function popMethods(data, store, isDel) {
   const isPop = ref(false)
-  // 提示pop进行修改还是新增，负数表示新增，非负表示修改的索引号
   function pop() {
     isPop.value = true
   }
@@ -104,6 +118,25 @@ function popMethods(data, store, isDel) {
     isDel.value = false
   }
   return { isPop, pop, closePop, add, del }
+}
+function registerMethods(data) {
+  const isRegister = ref(false)
+  const changeIndex = ref()
+  const dataGrade = reactive({})
+  function register(index) {
+    isRegister.value = true
+    changeIndex.value = index
+    dataGrade.value = data[index]
+  }
+  function closeRegister() {
+    isRegister.value = false
+  }
+  function modGrade(arr) {
+    let grade = arr[0].grade
+    let index = arr[1]
+    data[index].grade = grade
+  }
+  return { isRegister, changeIndex, dataGrade, register, closeRegister, modGrade }
 }
 function axiosMethods(dataComp, dataPlayer) {
   function getCompetitonInfo() {

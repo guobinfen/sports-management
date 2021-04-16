@@ -24,7 +24,7 @@
           <td class="date">{{ item.date }}</td>
           <td class="name">{{ item.name }}</td>
           <td class="number">{{ item.number }}</td>
-          <td class="grade">无</td>
+          <td class="grade">{{ item.grade }}</td>
           <td class="admin">二狗</td>
           <td class="operate">
             <span class="modify" @click="mod(index)">登记成绩</span>
@@ -84,8 +84,8 @@ function tabelMethods(context, store) {
   }
   // 点击修改键
   function mod(index) {
-    context.emit('pop', index)
-    store.state.title = '修改项目类型'
+    context.emit('register', index)
+    store.state.title = '登记成绩'
   }
   return { del, mod }
 }

@@ -4,6 +4,18 @@
       {{ holder.title }}
       <span class="exit iconfont" @click="close">&#xe7a0;</span>
     </div>
+    <div class="competition">
+      <div class="wrapper">赛程:</div>
+      <div class="content">{{ dataGrade.value.competition }}</div>
+    </div>
+    <div class="number">
+      <div class="wrapper">运动员编号:</div>
+      <div class="content">{{ dataGrade.value.number }}</div>
+    </div>
+    <div class="name">
+      <div class="wrapper">运动员姓名:</div>
+      <div class="content">{{ dataGrade.value.name }}</div>
+    </div>
     <el-form
       :model="ruleForm"
       :rules="rules"
@@ -11,28 +23,9 @@
       label-width="100px"
       class="demo-ruleForm"
     >
-      <div class="competition">
-        <el-form-item label="赛程" prop="competition">
-          <el-select v-model="ruleForm.competition" placeholder="请选择">
-            <el-option
-              v-for="(item, index) in dataComp"
-              :key="item.id"
-              :label="item.name"
-              :value="index"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-      </div>
-      <div class="player">
-        <el-form-item label="运动员" prop="player">
-          <el-select v-model="ruleForm.player" placeholder="请选择">
-            <el-option
-              v-for="(item, index) in dataPlayer"
-              :key="item.id"
-              :label="item.name"
-              :value="index"
-            ></el-option>
-          </el-select>
+      <div class="grade">
+        <el-form-item label="运动员成绩:" prop="grade">
+          <el-input v-model="ruleForm.grade"></el-input>
         </el-form-item>
       </div>
       <div class="submit">
@@ -45,22 +38,21 @@
 </template>
 
 <script>
-import { reactive, ref, computed } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { useStore } from 'vuex'
 export default {
-  name: 'PlogPop',
+  name: 'PlogRegister',
   props: {
-    dataComp: Array,
-    dataPlayer: Array
+    changeIndex: Number,
+    dataGrade: Object
   },
   setup(props, context) {
     const store = useStore()
-    // pop的标题以及placeholder
     const holder = reactive({
-      title: computed(() => store.state.title),
+      title: computed(() => store.state.title)
     })
     function close() {
-      context.emit('closePop')
+      context.emit('closeRegister')
     }
     const { formName, ruleForm, rules, submitForm } = formValidation(props, context, close)
     return { holder, close, formName, ruleForm, rules, submitForm }
@@ -69,33 +61,20 @@ export default {
 function formValidation(props, context, close) {
   const formName = ref(null)
   const ruleForm = reactive({
-    competition: '',
-    player: ''
+    grade: '',
   })
   const rules = reactive({
-    competition: [
-      { required: true, message: '请选择赛程', trigger: 'change' }
-    ],
-    player: [
-      { required: true, message: '请选择运动员', trigger: 'change' }
+    grade: [
+      { required: true, message: '请输入成绩', trigger: 'blur' }
     ]
   })
   function submitForm() {
     formName.value.validate((valid) => {
       if (valid) {
-        let newData = {
-          competition: '',
-          date: '',
-          name: '',
-          number: ''
-        }
-        let comp = props.dataComp[ruleForm.competition]
-        newData.competition = comp.name
-        newData.date = comp.date
-        let player = props.dataPlayer[ruleForm.player]
-        newData.name = player.name
-        newData.number = player.number
-        context.emit('add', newData)
+        let arr = []
+        arr.push(ruleForm)
+        arr.push(props.changeIndex)
+        context.emit('modGrade', arr)
         close()
       } else {
         console.log('error submit!!')
@@ -123,7 +102,7 @@ function formValidation(props, context, close) {
   width: 420px;
   padding-top: 16px;
   padding-left: 15px;
-  padding-bottom: 10px;
+  padding-bottom: 20px;
   background-color: #fff;
   transform: translateX(-50%);
 
@@ -143,18 +122,31 @@ function formValidation(props, context, close) {
     }
   }
 
-  .competition, .player {
+  .competition, .number, .name, .grade, .submit {
     width: 320px;
-    height: 60px;
-    line-height: 30px;
+    height: 40px;
+    line-height: 40px;
+    color: #606266;
     zoom: 1;
 
     &:after {
       floatClear();
     }
+
+    .wrapper {
+      float: left;
+      width: 92px;
+      text-align: right;
+    }
+
+    .content {
+      float: left;
+      margin-left: 8px;
+    }
+  }
+
+  .submit {
+    margin-top: 20px;
   }
 }
 </style>
-
-
-
