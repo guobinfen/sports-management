@@ -11,53 +11,45 @@
       label-width="100px"
       class="demo-ruleForm"
     >
-      <div class="number">
-        <el-form-item label="运动员编号:" prop="number">
+      <div class="adName">
+        <el-form-item label="姓名:" prop="adName">
           <el-input
-            v-model="ruleForm.number"
-            placeholder="请输入编号"
+            v-model="ruleForm.adName"
+            placeholder="请输入姓名"
           ></el-input>
         </el-form-item>
       </div>
-      <div class="name">
-        <el-form-item label="姓名:" prop="name">
-          <el-input v-model="ruleForm.name" placeholder="请输入姓名"></el-input>
+      <div class="user">
+        <el-form-item label="用户名:" prop="user">
+          <el-input
+            v-model="ruleForm.user"
+            placeholder="请输入用户名"
+          ></el-input>
         </el-form-item>
       </div>
-      <div class="sex">
-        <el-form-item label="性别" prop="sex">
-          <el-select v-model="ruleForm.sex" placeholder="请选择">
+      <div class="password">
+        <el-form-item label="密码:" prop="password">
+          <el-input
+            v-model="ruleForm.password"
+            placeholder="请输入密码"
+            show-password
+          ></el-input>
+        </el-form-item>
+      </div>
+      <div class="adSex">
+        <el-form-item label="性别:" prop="adSex">
+          <el-select v-model="ruleForm.adSex" placeholder="请选择">
             <el-option label="男" value="男"></el-option>
             <el-option label="女" value="女"></el-option>
           </el-select>
         </el-form-item>
       </div>
-      <div class="birth">
-        <el-form-item label="生日:" prop="birth">
-          <el-form-item prop="birth">
-            <el-date-picker
-              type="date"
-              placeholder="选择生日"
-              v-model="ruleForm.birth"
-              style="width: 100%"
-            ></el-date-picker>
-          </el-form-item>
-        </el-form-item>
-      </div>
-      <div class="stuNumber">
-        <el-form-item label="学号:" prop="stuNumber">
-          <el-input
-            v-model="ruleForm.stuNumber"
-            placeholder="请输入学号"
-          ></el-input>
-        </el-form-item>
-      </div>
-      <div class="class">
-        <el-form-item label="班级:" prop="class">
-          <el-input
-            v-model="ruleForm.class"
-            placeholder="请输入班级"
-          ></el-input>
+      <div class="adType">
+        <el-form-item label="身份类型:" prop="adType">
+          <el-select v-model="ruleForm.adType" placeholder="请选择">
+            <el-option label="管理员" value="管理员"></el-option>
+            <el-option label="操作员" value="操作员"></el-option>
+          </el-select>
         </el-form-item>
       </div>
       <div class="submit">
@@ -73,7 +65,7 @@
 import { reactive, ref, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 export default {
-  name: 'PlayerPop',
+  name: 'AdminPop',
   props: {
     handlePop: Object
   },
@@ -100,32 +92,28 @@ export default {
 function formValidation(props, context, close) {
   const formName = ref(null)
   const ruleForm = reactive({
-    number: '',
-    name: '',
-    sex: '',
-    birth: '',
-    stuNumber: '',
-    class: ''
+    adName: '',
+    user: '',
+    password: '',
+    adSex: '',
+    adType: '',
   })
   const rules = reactive({
-    number: [
-      { required: true, message: '请输入运动员编号', trigger: 'blur' }
-    ],
-    name: [
+    adName: [
       { required: true, message: '请输入姓名', trigger: 'blur' },
       { min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur' }
     ],
-    sex: [
+    user: [
+      { required: true, message: '请输入用户名', trigger: 'blur' },
+    ],
+    password: [
+      { required: true, message: '请输入密码', trigger: 'blur' },
+    ],
+    adSex: [
       { required: true, message: '请选择性别', trigger: 'change' }
     ],
-    birth: [
-      { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-    ],
-    stuNumber: [
-      { required: true, message: '请输入学号', trigger: 'blur' }
-    ],
-    class: [
-      { required: true, message: '请输入班级', trigger: 'blur' }
+    adType: [
+      { required: true, message: '请选择身份类型', trigger: 'change' }
     ]
   })
   function submitForm() {
@@ -182,7 +170,7 @@ function formValidation(props, context, close) {
     }
   }
 
-  .number, .name, .sex, .birth, .stuNumber, .class {
+  .adName, .user, .password, .adSex, .adType {
     width: 320px;
     height: 60px;
     line-height: 30px;
@@ -191,14 +179,6 @@ function formValidation(props, context, close) {
     &:after {
       floatClear();
     }
-
-    .warnHint {
-      border-color: #f56c6c !important;
-    }
-  }
-
-  .icon {
-    color: #f56c6c;
   }
 }
 </style>
