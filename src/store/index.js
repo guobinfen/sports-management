@@ -2,6 +2,7 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
+    user: '',
     p1: {
       user: 'admin',
       pwd: '123'

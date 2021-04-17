@@ -17,9 +17,7 @@
           <td class="name">{{ item.name }}</td>
           <td class="des">{{ item.des }}</td>
           <td class="operate">
-            <span class="modify" @click="mod(index, item.name, item.des)"
-              >修改</span
-            >
+            <span class="modify" @click="mod(index)">修改</span>
             <span class="del" @click="del(index)">删除</span>
           </td>
         </tr>
@@ -75,11 +73,9 @@ function tabelMethods(context, store) {
     store.state.del.index = index
   }
   // 点击修改键
-  function mod(index, name, des) {
+  function mod(index) {
     context.emit('pop', index)
     store.state.title = '修改项目类型'
-    store.state.typePop.name = name
-    store.state.typePop.des = des
   }
   return { del, mod }
 }

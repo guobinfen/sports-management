@@ -2,20 +2,25 @@
   <div class="title">
     <div class="titleName">体育赛事管理系统</div>
     <div class="exit" @click="exit">退出</div>
-    <div class="admin">管理员1</div>
+    <div class="admin">{{ user }}</div>
   </div>
 </template>
 
 <script>
+import { ref } from 'vue'
+import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 export default {
   name: 'CommonTitle',
   setup() {
+    const store = useStore()
     const router = useRouter()
+    const user = ref('')
+    user.value = store.state.user
     function exit() {
       router.push('/')
     }
-    return { exit }
+    return { user, exit }
   }
 }
 </script>

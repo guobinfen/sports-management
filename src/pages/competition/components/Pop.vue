@@ -18,7 +18,7 @@
               v-for="item in type"
               :key="item.id"
               :label="item.name"
-              :value="item.id"
+              :value="item.name"
             >
             </el-option>
           </el-select>
@@ -36,10 +36,10 @@
         <el-form-item label="日期:" required>
           <el-form-item prop="date">
             <el-date-picker
+              format="YYYY-MM-DD"
               v-model="ruleForm.date"
               type="date"
               placeholder="选择日期"
-              format="YYYY-MM-DD"
             >
             </el-date-picker>
           </el-form-item>
@@ -161,6 +161,7 @@ function formValidation(props, context, close) {
   function submitForm() {
     formName.value.validate((valid) => {
       if (valid) {
+        ruleForm.date = formatDate(ruleForm.date)
         let arr = []
         arr.push(ruleForm)
         arr.push(props.handlePop.index)
@@ -171,6 +172,14 @@ function formValidation(props, context, close) {
         return false;
       }
     })
+  }
+  function formatDate(date) {
+    var y = date.getFullYear();
+    var m = date.getMonth() + 1;
+    m = m < 10 ? '0' + m : m;
+    var d = date.getDate();
+    d = d < 10 ? ('0' + d) : d;
+    return y + '-' + m + '-' + d;
   }
   return { ruleForm, formName, rules, submitForm }
 }

@@ -14,7 +14,7 @@
       <div class="number">
         <el-form-item label="运动员编号:" prop="number">
           <el-input
-            v-model="ruleForm.number"
+            v-model.trim="ruleForm.number"
             placeholder="请输入编号"
           ></el-input>
         </el-form-item>
@@ -131,6 +131,7 @@ function formValidation(props, context, close) {
   function submitForm() {
     formName.value.validate((valid) => {
       if (valid) {
+        ruleForm.birth = formatDate(ruleForm.birth)
         let arr = []
         arr.push(ruleForm)
         arr.push(props.handlePop.index)
@@ -141,6 +142,14 @@ function formValidation(props, context, close) {
         return false;
       }
     })
+  }
+  function formatDate(date) {
+    var y = date.getFullYear();
+    var m = date.getMonth() + 1;
+    m = m < 10 ? '0' + m : m;
+    var d = date.getDate();
+    d = d < 10 ? ('0' + d) : d;
+    return y + '-' + m + '-' + d;
   }
   return { formName, ruleForm, rules, submitForm }
 }
@@ -191,17 +200,6 @@ function formValidation(props, context, close) {
     &:after {
       floatClear();
     }
-
-    .warnHint {
-      border-color: #f56c6c !important;
-    }
-  }
-
-  .icon {
-    color: #f56c6c;
   }
 }
 </style>
-
-
-
