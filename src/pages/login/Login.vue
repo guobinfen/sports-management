@@ -52,6 +52,7 @@ export default {
   }
 }
 function formValidation(store, router) {
+  // 存放获取的数据
   const data = reactive([])
   const formName = ref(null)
   const ruleForm = reactive({
