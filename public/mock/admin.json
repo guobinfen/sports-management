@@ -9,14 +9,6 @@
         "password": "123",
         "adSex": "男",
         "adType": "管理员"
-      },
-      {
-        "id": 2222,
-        "adName": "大黑",
-        "user": "DaHei",
-        "password": "321",
-        "adSex": "女",
-        "adType": "操作员"
       }
     ]
   }

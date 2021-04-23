@@ -34,10 +34,11 @@
 </template>
 
 <script>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import CommonOptions from 'common/Options'
+import axios from 'axios'
 export default {
   name: 'Login',
   components: {
@@ -51,6 +52,7 @@ export default {
   }
 }
 function formValidation(store, router) {
+  const data = reactive([])
   const formName = ref(null)
   const ruleForm = reactive({
     user: '',
@@ -64,24 +66,42 @@ function formValidation(store, router) {
       { required: true, message: '请输入密码', trigger: 'blur' },
     ]
   })
+  const { getAdminInfo } = axiosMethods(data)
   function submitForm() {
     formName.value.validate((valid) => {
       if (valid) {
-        // 当前用户名和密码是写死的，只有一项
-        if (ruleForm.user == store.state.p1.user
-          && ruleForm.password == store.state.p1.pwd) {
-          store.state.user = ruleForm.user
-          router.push('/type')
-        } else {
-          alert('用户名和密码不符')
-        }
+        data.forEach((value, index) => {
+          if (ruleForm.user == value.user
+            && ruleForm.password == value.password) {
+            store.state.user = ruleForm.user
+            router.push('/type')
+          } else {
+            alert('用户名和密码不符')
+          }
+        })
       } else {
         alert('请重新输入')
         return false;
       }
     })
   }
+  onMounted(() => {
+    getAdminInfo()
+  })
   return { formName, ruleForm, rules, submitForm }
+}
+function axiosMethods(data) {
+  function getAdminInfo() {
+    axios.get('/api/admin.json').then(getAdminInfoSucc)
+  }
+  function getAdminInfoSucc(res) {
+    res = res.data
+    if (res.ret && res.data) {
+      data.push(...res.data.admin)
+    }
+    console.log(data)
+  }
+  return { getAdminInfo }
 }
 </script>
 
